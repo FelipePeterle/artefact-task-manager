@@ -1,0 +1,36 @@
+{
+  "name": "artefact-task-manager",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sistema de Gestão de Tarefas - Desafio Prático Artefact (Next.js 15 + tRPC)",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "tsx tests/test-runner.ts"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.66.0",
+    "@trpc/client": "^11.23.0",
+    "@trpc/react-query": "^11.23.0",
+    "@trpc/server": "^11.23.0",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.475.0",
+    "next": "^15.2.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwind-merge": "^3.0.1",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.4",
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.5.2",
+    "tailwindcss": "^3.4.17",
+    "tsx": "^4.23.15",
+    "typescript": "^5.7.3"
+  }
+}
