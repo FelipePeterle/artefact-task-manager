@@ -30,7 +30,7 @@ export function Header() {
               </span>
             </div>
             <p className="text-xs text-slate-500 hidden sm:block">
-              Gerenciador de Tarefas • In-Memory CRUD
+              Task Manager • In-Memory CRUD
             </p>
           </div>
         </Link>
@@ -45,7 +45,7 @@ export function Header() {
                 : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
             }`}
           >
-            Listagem
+            All Tasks
           </Link>
 
           <Link
@@ -53,7 +53,7 @@ export function Header() {
             className="inline-flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-lg bg-blue-600 text-white shadow-sm hover:bg-blue-700 active:scale-95 transition-all"
           >
             <PlusCircle className="w-4 h-4" />
-            <span>Nova Tarefa</span>
+            <span>New Task</span>
           </Link>
         </nav>
       </div>

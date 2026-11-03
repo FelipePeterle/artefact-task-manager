@@ -3,7 +3,7 @@ import { createContext } from "../server/context";
 import { TRPCError } from "@trpc/server";
 
 async function runTests() {
-  console.log("🧪 Iniciando bateria de testes do tRPC (CRUD e Validações)...");
+  console.log("🧪 Starting tRPC automated test suite (CRUD & Validations)...");
   const ctx = await createContext();
   const caller = appRouter.createCaller(ctx);
 
@@ -21,114 +21,114 @@ async function runTests() {
     }
   }
 
-  // 1. Teste de Listagem Inicial
-  await test("Listar tarefas deve retornar a lista com as sementes iniciais", async () => {
+  // 1. Initial Listing Test
+  await test("List tasks should return non-empty array with initial seed tasks", async () => {
     const tasks = await caller.tarefas.listar();
     if (!Array.isArray(tasks) || tasks.length === 0) {
-      throw new Error(`Esperado array com itens, recebido: ${tasks.length}`);
+      throw new Error(`Expected array with items, received: ${tasks.length}`);
     }
   });
 
-  // 2. Teste de Criação Válida
+  // 2. Valid Creation Test
   let createdId = "";
-  await test("Criar tarefa com título e descrição válidos", async () => {
+  await test("Create task with valid title and optional description", async () => {
     const newTask = await caller.tarefas.criar({
-      titulo: "Tarefa de Teste Automatizado",
-      descricao: "Descrição do teste automatizado",
+      titulo: "Automated Integration Test Task",
+      descricao: "Test task description created by test runner",
     });
-    if (!newTask.id || newTask.titulo !== "Tarefa de Teste Automatizado") {
-      throw new Error("Tarefa criada com dados inconsistentes");
+    if (!newTask.id || newTask.titulo !== "Automated Integration Test Task") {
+      throw new Error("Created task returned inconsistent data");
     }
     if (typeof newTask.dataCriacao !== "number") {
-      throw new Error("dataCriacao deve ser um timestamp numérico");
+      throw new Error("dataCriacao must be a numeric timestamp");
     }
     createdId = newTask.id;
   });
 
-  // 3. Teste de Validação: Título Vazio
-  await test("Bloquear criação de tarefa com título vazio (validação Zod)", async () => {
+  // 3. Validation Test: Empty Title
+  await test("Block task creation with empty or whitespace-only title (Zod validation)", async () => {
     try {
       await caller.tarefas.criar({
         titulo: "   ",
-        descricao: "Tentativa inválida",
+        descricao: "Invalid creation attempt",
       });
-      throw new Error("Deveria ter falhado com título vazio!");
+      throw new Error("Expected validation error for empty title!");
     } catch (err: any) {
-      if (err.name === "TRPCError" || err.message.includes("título")) {
-        // Sucesso esperado
+      if (err.name === "TRPCError" || err.message.toLowerCase().includes("title")) {
+        // Expected success
       } else {
         throw err;
       }
     }
   });
 
-  // 4. Teste de Obter por ID
-  await test("Obter tarefa existente pelo ID", async () => {
+  // 4. Get by ID Test
+  await test("Get existing task by unique ID", async () => {
     const task = await caller.tarefas.obterPorId({ id: createdId });
     if (task.id !== createdId) {
-      throw new Error("ID retornado não confere");
+      throw new Error("Returned ID does not match requested ID");
     }
   });
 
-  // 5. Teste de Atualização Válida
-  await test("Atualizar título e descrição de tarefa existente", async () => {
+  // 5. Valid Update Test
+  await test("Update title and description of an existing task", async () => {
     const updated = await caller.tarefas.atualizar({
       id: createdId,
-      titulo: "Tarefa de Teste Atualizada",
-      descricao: "Nova descrição atualizada",
+      titulo: "Updated Test Task Title",
+      descricao: "New updated description",
     });
-    if (updated.titulo !== "Tarefa de Teste Atualizada") {
-      throw new Error("Título não foi atualizado corretamente");
+    if (updated.titulo !== "Updated Test Task Title") {
+      throw new Error("Task title was not updated properly");
     }
   });
 
-  // 6. Teste de Erro: Atualizar Tarefa Inexistente
-  await test("Retornar erro significativo (NOT_FOUND) ao atualizar ID inexistente", async () => {
+  // 6. Error Handling Test: Update Non-existent ID
+  await test("Return semantic error (NOT_FOUND) when updating non-existent ID", async () => {
     try {
       await caller.tarefas.atualizar({
-        id: "id-totalmente-inexistente-12345",
-        titulo: "Título",
+        id: "completely-non-existent-uuid-12345",
+        titulo: "Title",
       });
-      throw new Error("Deveria ter lançado NOT_FOUND!");
+      throw new Error("Expected TRPCError NOT_FOUND!");
     } catch (err: any) {
       if (err instanceof TRPCError && err.code === "NOT_FOUND") {
-        // Sucesso esperado
+        // Expected success
       } else {
-        throw new Error(`Esperado TRPCError NOT_FOUND, recebido: ${err.code || err.message}`);
+        throw new Error(`Expected TRPCError NOT_FOUND, received: ${err.code || err.message}`);
       }
     }
   });
 
-  // 7. Teste de Deleção Válida
-  await test("Excluir tarefa existente pelo ID", async () => {
+  // 7. Valid Delete Test
+  await test("Delete existing task by unique ID", async () => {
     const res = await caller.tarefas.deletar({ id: createdId });
     if (!res.success || res.id !== createdId) {
-      throw new Error("Falha ao remover tarefa");
+      throw new Error("Failed to delete task");
     }
   });
 
-  // 8. Teste de Erro: Excluir Tarefa Inexistente
-  await test("Retornar erro significativo (NOT_FOUND) ao excluir ID inexistente", async () => {
+  // 8. Error Handling Test: Delete Non-existent ID
+  await test("Return semantic error (NOT_FOUND) when deleting non-existent ID", async () => {
     try {
-      await caller.tarefas.deletar({ id: createdId }); // Já foi excluída
-      throw new Error("Deveria ter lançado NOT_FOUND na segunda exclusão!");
+      await caller.tarefas.deletar({ id: createdId }); // Already deleted above
+      throw new Error("Expected TRPCError NOT_FOUND on subsequent delete!");
     } catch (err: any) {
       if (err instanceof TRPCError && err.code === "NOT_FOUND") {
-        // Sucesso esperado
+        // Expected success
       } else {
-        throw new Error(`Esperado TRPCError NOT_FOUND, recebido: ${err.code || err.message}`);
+        throw new Error(`Expected TRPCError NOT_FOUND, received: ${err.code || err.message}`);
       }
     }
   });
 
-  // 9. Teste do Infinite Scroll (Cursor Pagination)
-  await test("Listagem paginada (Infinite Scroll) retorna items e nextCursor", async () => {
+  // 9. Infinite Scroll Cursor-based Pagination Test
+  await test("Paginated listing (Infinite Scroll) returns items and nextCursor", async () => {
     const page1 = await caller.tarefas.listarInfinito({ limit: 4 });
     if (page1.items.length !== 4) {
-      throw new Error(`Esperado 4 itens na página 1, recebido: ${page1.items.length}`);
+      throw new Error(`Expected 4 items on page 1, received: ${page1.items.length}`);
     }
     if (!page1.nextCursor) {
-      throw new Error("Esperado nextCursor presente para próxima página");
+      throw new Error("Expected nextCursor to be present for the next page");
     }
 
     const page2 = await caller.tarefas.listarInfinito({
@@ -136,20 +136,20 @@ async function runTests() {
       cursor: page1.nextCursor,
     });
     if (page2.items.length === 0) {
-      throw new Error("Página 2 deveria conter itens");
+      throw new Error("Page 2 should contain items");
     }
     if (page2.items[0].id === page1.items[0].id) {
-      throw new Error("Página 2 não deve repetir itens da página 1");
+      throw new Error("Page 2 items must not repeat page 1 items");
     }
   });
 
-  console.log(`\n📊 Resultado dos Testes: ${passed} passaram, ${failed} falharam.\n`);
+  console.log(`\n📊 Test Suite Results: ${passed} passed, ${failed} failed.\n`);
   if (failed > 0) {
     process.exit(1);
   }
 }
 
 runTests().catch((e) => {
-  console.error("Erro fatal nos testes:", e);
+  console.error("Fatal test runner error:", e);
   process.exit(1);
 });

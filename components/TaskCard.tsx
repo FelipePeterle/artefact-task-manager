@@ -11,19 +11,19 @@ interface TaskCardProps {
 }
 
 export function TaskCard({ task, onDeleteRequest }: TaskCardProps) {
-  // Formatação amigável da data em Português
-  const dataFormatada = React.useMemo(() => {
+  // Friendly date formatting in English
+  const formattedDate = React.useMemo(() => {
     try {
       const date = new Date(task.dataCriacao);
-      return new Intl.DateTimeFormat("pt-BR", {
-        day: "2-digit",
+      return new Intl.DateTimeFormat("en-US", {
         month: "short",
+        day: "numeric",
         year: "numeric",
         hour: "2-digit",
         minute: "2-digit",
       }).format(date);
     } catch {
-      return "Data não disponível";
+      return "Date unavailable";
     }
   }, [task.dataCriacao]);
 
@@ -42,7 +42,7 @@ export function TaskCard({ task, onDeleteRequest }: TaskCardProps) {
           </p>
         ) : (
           <p className="text-xs text-slate-400 italic mb-4">
-            Sem descrição informada.
+            No description provided.
           </p>
         )}
       </div>
@@ -50,27 +50,27 @@ export function TaskCard({ task, onDeleteRequest }: TaskCardProps) {
       <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2 mt-auto">
         <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
           <Calendar className="w-3.5 h-3.5 text-slate-400" />
-          <span>{dataFormatada}</span>
+          <span>{formattedDate}</span>
         </div>
 
         <div className="flex items-center gap-1">
           <Link
             href={`/tarefas/${task.id}/editar`}
             className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-            title="Editar tarefa"
+            title="Edit task"
           >
             <Edit3 className="w-3.5 h-3.5" />
-            <span>Editar</span>
+            <span>Edit</span>
           </Link>
 
           <button
             type="button"
             onClick={() => onDeleteRequest(task)}
             className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors"
-            title="Excluir tarefa"
+            title="Delete task"
           >
             <Trash2 className="w-3.5 h-3.5" />
-            <span>Excluir</span>
+            <span>Delete</span>
           </button>
         </div>
       </div>

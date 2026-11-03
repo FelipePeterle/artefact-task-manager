@@ -8,20 +8,20 @@ import {
 } from "../schemas/task.schema";
 
 /**
- * Router de Tarefas (CRUD completo via tRPC).
- * Implementa validação estrita com Zod e tratamento semântico de erros (TRPCError).
+ * Task router handling complete CRUD operations via tRPC.
+ * Enforces strict Zod validation and semantic TRPCErrors.
  */
 export const tarefasRouter = router({
   /**
-   * Listar todas as tarefas em memória (sem paginação).
+   * List all tasks currently in memory.
    */
   listar: publicProcedure.query(() => {
     return taskStore.getAll();
   }),
 
   /**
-   * Listar tarefas com suporte a Infinite Scroll (cursor-based pagination).
-   * Bônus do desafio: carrega lotes dinâmicos conforme o usuário rola a tela.
+   * List tasks with cursor-based pagination for Infinite Scroll.
+   * Bonus feature: incrementally loads batches as the user scrolls.
    */
   listarInfinito: publicProcedure
     .input(listTasksInputSchema)
@@ -31,23 +31,23 @@ export const tarefasRouter = router({
     }),
 
   /**
-   * Obter os detalhes de uma tarefa pelo ID.
-   * Utilizado para pré-carregar os dados no formulário de edição.
+   * Get task details by ID.
+   * Used for pre-filling the edit form.
    */
   obterPorId: publicProcedure.input(taskIdSchema).query(({ input }) => {
     const task = taskStore.getById(input.id);
     if (!task) {
       throw new TRPCError({
         code: "NOT_FOUND",
-        message: `Tarefa com ID "${input.id}" não foi encontrada.`,
+        message: `Task with ID "${input.id}" was not found.`,
       });
     }
     return task;
   }),
 
   /**
-   * Criar nova tarefa.
-   * Valida obrigatoriedade do título via schema Zod e gera ID único e data automaticamente.
+   * Create a new task.
+   * Validates title presence via Zod and automatically generates UUID and timestamp.
    */
   criar: publicProcedure
     .input(createTaskSchema)
@@ -57,8 +57,8 @@ export const tarefasRouter = router({
     }),
 
   /**
-   * Atualizar dados de uma tarefa existente.
-   * Lança TRPCError com código NOT_FOUND caso a tarefa não exista.
+   * Update an existing task.
+   * Throws TRPCError with NOT_FOUND if the task does not exist.
    */
   atualizar: publicProcedure
     .input(updateTaskSchema)
@@ -67,15 +67,15 @@ export const tarefasRouter = router({
       if (!tarefaAtualizada) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: `Não foi possível atualizar: tarefa "${input.id}" não existe.`,
+          message: `Unable to update: task with ID "${input.id}" was not found.`,
         });
       }
       return tarefaAtualizada;
     }),
 
   /**
-   * Deletar uma tarefa pelo ID.
-   * Lança TRPCError com código NOT_FOUND caso a tarefa não exista.
+   * Delete a task by ID.
+   * Throws TRPCError with NOT_FOUND if the task does not exist.
    */
   deletar: publicProcedure
     .input(taskIdSchema)
@@ -84,7 +84,7 @@ export const tarefasRouter = router({
       if (!existe) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: `Não foi possível remover: tarefa "${input.id}" não encontrada.`,
+          message: `Unable to delete: task with ID "${input.id}" was not found.`,
         });
       }
 

@@ -6,11 +6,11 @@ import { TaskForm } from "@/components/TaskForm";
 import { AlertCircle, ArrowLeft } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Editar Tarefa • Artefact Task Manager",
-  description: "Atualizar os dados de uma tarefa existente.",
+  title: "Edit Task • Artefact Task Manager",
+  description: "Update the details of an existing task.",
 };
 
-// Força SSR dinâmico para garantir dados frescos da tarefa
+// Enforce dynamic SSR to guarantee fresh task data
 export const dynamic = "force-dynamic";
 
 interface EditarPageProps {
@@ -27,7 +27,7 @@ export default async function EditarTarefaPage({ params }: EditarPageProps) {
   try {
     initialTask = await caller.tarefas.obterPorId({ id });
   } catch (err: any) {
-    errorMessage = err?.message || "Tarefa não encontrada no servidor.";
+    errorMessage = err?.message || "Task not found on the server.";
   }
 
   if (!initialTask || errorMessage) {
@@ -37,18 +37,18 @@ export default async function EditarTarefaPage({ params }: EditarPageProps) {
           <AlertCircle className="w-7 h-7" />
         </div>
         <h2 className="text-xl font-bold text-slate-900 mb-2">
-          Tarefa não encontrada
+          Task Not Found
         </h2>
         <p className="text-sm text-slate-500 mb-6">
-          A tarefa solicitada (ID: <code className="font-mono">{id}</code>) não
-          existe ou foi removida da memória do servidor.
+          The requested task (ID: <code className="font-mono">{id}</code>) does
+          not exist or has been removed from server memory.
         </p>
         <Link
           href="/"
           className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-all shadow-sm"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Voltar para a listagem</span>
+          <span>Back to task list</span>
         </Link>
       </div>
     );

@@ -32,7 +32,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     const id = Math.random().toString(36).substring(2, 9);
     setToasts((prev) => [...prev, { id, type, message }]);
 
-    // Auto-remove após 4.5 segundos
+    // Auto-remove after 4.5 seconds
     setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
     }, 4500);
@@ -50,7 +50,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   return (
     <ToastContext.Provider value={{ toast: toastMethods }}>
       {children}
-      {/* Container fixo de Toasts */}
+      {/* Fixed Toast Container */}
       <div className="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-md w-full px-4 pointer-events-none">
         {toasts.map((item) => (
           <div
@@ -80,7 +80,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
             <button
               onClick={() => removeToast(item.id)}
               className="shrink-0 text-slate-400 hover:text-slate-600 transition-colors p-1"
-              aria-label="Fechar notificação"
+              aria-label="Close notification"
             >
               <X className="w-4 h-4" />
             </button>
@@ -94,7 +94,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
 export function useToast() {
   const context = useContext(ToastContext);
   if (!context) {
-    throw new Error("useToast deve ser utilizado dentro de um ToastProvider");
+    throw new Error("useToast must be used within a ToastProvider");
   }
   return context.toast;
 }

@@ -3,8 +3,8 @@ import { Metadata } from "next";
 import { TaskForm } from "@/components/TaskForm";
 
 export const metadata: Metadata = {
-  title: "Nova Tarefa • Artefact Task Manager",
-  description: "Cadastrar uma nova tarefa no gerenciador de produtividade.",
+  title: "New Task • Artefact Task Manager",
+  description: "Create a new task in the productivity task manager.",
 };
 
 export default function NovaTarefaPage() {

@@ -5,9 +5,9 @@ import { ToastProvider } from "@/components/Toast";
 import { Header } from "@/components/Header";
 
 export const metadata: Metadata = {
-  title: "Artefact - Gestor de Tarefas (Next.js 15 + tRPC)",
+  title: "Artefact - Task Manager (Next.js 15 + tRPC)",
   description:
-    "Aplicação de produtividade com gerenciamento de tarefas em memória, tRPC v11, SSR e Infinite Scroll.",
+    "Productivity task management application with in-memory persistence, tRPC v11, SSR, and Infinite Scroll.",
 };
 
 export default function RootLayout({
@@ -16,7 +16,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" className="h-full">
+    <html lang="en" className="h-full">
       <body className="min-h-full flex flex-col bg-slate-50/60 text-slate-900 antialiased">
         <TRPCProvider>
           <ToastProvider>
@@ -27,10 +27,10 @@ export default function RootLayout({
             <footer className="w-full border-t border-slate-200/80 bg-white py-6 mt-12 text-center text-xs text-slate-500">
               <div className="max-w-5xl mx-auto px-4">
                 <p className="font-medium text-slate-700">
-                  Desafio Técnico: Artefact — "AI is about people"
+                  Technical Assessment: Artefact — "AI is about people"
                 </p>
                 <p className="mt-1 text-slate-400">
-                  Construído com Next.js 15 (App Router), tRPC v11, TypeScript, Tailwind CSS e In-Memory Store.
+                  Engineered with Next.js 15 (App Router), tRPC v11, TypeScript, Tailwind CSS, and In-Memory Store.
                 </p>
               </div>
             </footer>

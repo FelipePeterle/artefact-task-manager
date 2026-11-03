@@ -37,16 +37,16 @@ export function DeleteModal({
               id="modal-title"
               className="text-lg font-bold text-slate-900 leading-snug"
             >
-              Excluir Tarefa
+              Delete Task
             </h3>
             <p className="text-xs text-slate-500">
-              Esta ação removerá a tarefa da memória do servidor.
+              This action will remove the task from server memory.
             </p>
           </div>
         </div>
 
         <p className="text-sm text-slate-600 mb-6 bg-slate-50 p-3.5 rounded-xl border border-slate-100">
-          Você tem certeza de que deseja excluir a tarefa:{" "}
+          Are you sure you want to permanently delete the task:{" "}
           <strong className="text-slate-900 font-semibold break-words">
             "{taskTitle}"
           </strong>
@@ -60,7 +60,7 @@ export function DeleteModal({
             disabled={isDeleting}
             className="px-4 py-2 text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors disabled:opacity-50"
           >
-            Cancelar
+            Cancel
           </button>
           <button
             type="button"
@@ -71,10 +71,10 @@ export function DeleteModal({
             {isDeleting ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                <span>Excluindo...</span>
+                <span>Deleting...</span>
               </>
             ) : (
-              <span>Confirmar Exclusão</span>
+              <span>Confirm Delete</span>
             )}
           </button>
         </div>

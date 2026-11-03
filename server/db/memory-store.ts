@@ -2,9 +2,9 @@ import { Task, CreateTaskInput, UpdateTaskInput } from "../schemas/task.schema";
 import { randomUUID } from "node:crypto";
 
 /**
- * Repositório em memória para persistência volátil das tarefas.
- * Utiliza o objeto globalThis para preservar os dados em memória durante
- * recarregamentos a quente (HMR) no ambiente de desenvolvimento do Next.js.
+ * In-memory repository for volatile task persistence.
+ * Uses globalThis to preserve stored tasks across Hot Module Replacement (HMR)
+ * reloads during Next.js development mode.
  */
 class TaskMemoryStore {
   private tasks: Map<string, Task> = new Map();
@@ -14,70 +14,70 @@ class TaskMemoryStore {
   }
 
   /**
-   * Inicializa dados de exemplo para demonstrar o sistema,
-   * permitindo validar a listagem inicial SSR e o Infinite Scroll de imediato.
+   * Initializes sample tasks to facilitate assessment,
+   * allowing immediate demonstration of initial SSR hydration and Infinite Scroll.
    */
   private seedInitialData() {
     const now = Date.now();
     const initialTasks: Array<Omit<Task, "id">> = [
       {
-        titulo: "Planejar arquitetura de software de produtividade",
-        descricao: "Estruturar separação de camadas entre Next.js 15, rotas tRPC e store em memória.",
-        dataCriacao: now - 1000 * 60 * 60 * 24, // 24h atrás
+        titulo: "Architect full-stack productivity task manager",
+        descricao: "Define modular boundaries between Next.js 15 App Router, tRPC procedures, and in-memory store.",
+        dataCriacao: now - 1000 * 60 * 60 * 24, // 24h ago
       },
       {
-        titulo: "Arquitetar modelo de domínio das tarefas",
-        descricao: "Definir tipagens estritas TypeScript e esquemas de validação de dados com Zod.",
+        titulo: "Model domain schemas with TypeScript and Zod",
+        descricao: "Enforce strict end-to-end type validation, non-empty title constraints, and cursor pagination.",
         dataCriacao: now - 1000 * 60 * 60 * 18,
       },
       {
-        titulo: "Configurar Next.js 15 com App Router e tRPC",
-        descricao: "Integrar tRPC v11 com Server-Side Rendering e TanStack React Query.",
+        titulo: "Configure Next.js 15 App Router with tRPC v11",
+        descricao: "Integrate tRPC server handler, React Query hydration, and client providers.",
         dataCriacao: now - 1000 * 60 * 60 * 12,
       },
       {
-        titulo: "Implementar operações CRUD no backend tRPC",
-        descricao: "Endpoints para criar, listar, atualizar e deletar tarefas com validação Zod.",
+        titulo: "Implement complete CRUD operations via tRPC",
+        descricao: "Build endpoints to create, list, inspect by ID, update, and delete tasks with semantic TRPCErrors.",
         dataCriacao: now - 1000 * 60 * 60 * 8,
       },
       {
-        titulo: "Desenvolver página de listagem com SSR e feedback visual",
-        descricao: "Exibir tarefas pré-carregadas no servidor com layout limpo e ação de exclusão com toasts.",
+        titulo: "Build task listing page with Server-Side Rendering (SSR)",
+        descricao: "Pre-render initial tasks on the server to optimize FCP and SEO, hydrating React Query on the client.",
         dataCriacao: now - 1000 * 60 * 60 * 5,
       },
       {
-        titulo: "Criar telas de criação e edição com validação de formulário",
-        descricao: "Formulários controlados com tratamento de erros tanto no frontend quanto no backend.",
+        titulo: "Develop responsive creation and edit forms",
+        descricao: "Manage form state with functional hooks, real-time validation, and defensive backend error handling.",
         dataCriacao: now - 1000 * 60 * 60 * 3,
       },
       {
-        titulo: "Implementar bônus: Infinite Scroll com IntersectionObserver",
-        descricao: "Carregamento incremental de tarefas ao atingir o fim da página de listagem.",
+        titulo: "Implement Infinite Scroll bonus with IntersectionObserver",
+        descricao: "Enable smooth incremental task loading as the user scrolls toward the bottom of the page.",
         dataCriacao: now - 1000 * 60 * 60 * 2,
       },
       {
-        titulo: "Adicionar tratamento global de erros e feedback amigável",
-        descricao: "Garantir feedback de estados de loading, mensagens de sucesso e erros com TRPCError.",
+        titulo: "Integrate toast notifications and delete confirmation modal",
+        descricao: "Provide immediate visual feedback for loading states, success messages, and destructive actions.",
         dataCriacao: now - 1000 * 60 * 50,
       },
       {
-        titulo: "Elaborar documentação completa no README.md",
-        descricao: "Descrever decisões de arquitetura, padrões utilizados e instruções passo a passo para execução.",
+        titulo: "Write comprehensive README documentation",
+        descricao: "Document architecture decisions, setup instructions, testing steps, and evaluation guide in English.",
         dataCriacao: now - 1000 * 60 * 30,
       },
       {
-        titulo: "Validar compilação e tipagem estrita TypeScript",
-        descricao: "Executar build de produção para assegurar que não haja nenhuma regressão de tipos.",
+        titulo: "Run automated integration test suite",
+        descricao: "Validate all tRPC procedures, input validations, error cases, and cursor pagination with 100% pass rate.",
         dataCriacao: now - 1000 * 60 * 15,
       },
       {
-        titulo: "Executar bateria de testes automatizados dos endpoints",
-        descricao: "Assegurar cobertura de integração das operações de CRUD e paginação do tRPC.",
+        titulo: "Prepare clean GitHub public repository",
+        descricao: "Ensure zero sensitive credentials, clean commit history, and public accessibility for evaluation.",
         dataCriacao: now - 1000 * 60 * 5,
       },
     ];
 
-    // Ordenadas por data decrescente
+    // Seed tasks in descending chronological order
     for (const item of initialTasks) {
       const id = randomUUID();
       this.tasks.set(id, { id, ...item });
@@ -85,7 +85,7 @@ class TaskMemoryStore {
   }
 
   /**
-   * Retorna todas as tarefas ordenadas da mais recente para a mais antiga.
+   * Returns all tasks sorted from newest to oldest.
    */
   public getAll(): Task[] {
     return Array.from(this.tasks.values()).sort(
@@ -94,15 +94,15 @@ class TaskMemoryStore {
   }
 
   /**
-   * Busca uma tarefa pelo ID único.
+   * Finds a task by unique ID.
    */
   public getById(id: string): Task | undefined {
     return this.tasks.get(id);
   }
 
   /**
-   * Paginação baseada em cursor para Infinite Scroll:
-   * Retorna 'limit' itens e o 'nextCursor' se houverem mais tarefas.
+   * Cursor-based pagination for Infinite Scroll:
+   * Returns 'limit' items and the 'nextCursor' if more tasks are available.
    */
   public getPaginated(limit: number, cursor?: string | null): {
     items: Task[];
@@ -131,7 +131,7 @@ class TaskMemoryStore {
   }
 
   /**
-   * Cria e armazena uma nova tarefa com id gerado automaticamente.
+   * Creates and stores a new task with an automatically generated UUID.
    */
   public create(data: CreateTaskInput): Task {
     const id = randomUUID();
@@ -147,7 +147,7 @@ class TaskMemoryStore {
   }
 
   /**
-   * Atualiza os campos de uma tarefa existente.
+   * Updates an existing task. Returns null if not found.
    */
   public update(data: UpdateTaskInput): Task | null {
     const existing = this.tasks.get(data.id);
@@ -166,21 +166,21 @@ class TaskMemoryStore {
   }
 
   /**
-   * Remove uma tarefa da memória.
+   * Deletes a task by ID. Returns boolean indicating success.
    */
   public delete(id: string): boolean {
     return this.tasks.delete(id);
   }
 
   /**
-   * Retorna a quantidade total de tarefas cadastradas.
+   * Returns total count of tasks.
    */
   public count(): number {
     return this.tasks.size;
   }
 }
 
-// Singleton global para resistir a reloads no Next.js Dev Mode
+// Global singleton to persist across HMR reloads in Next.js development
 declare global {
   // eslint-disable-next-line no-var
   var __taskMemoryStoreInstance: TaskMemoryStore | undefined;
